@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Cliente</title>
+    <link rel="stylesheet" href="../assets/css/cliente.css">
+    <script src="../assets/js/main.js" defer></script>
+</head>
+<body class="cadastro-body">
+    <div class="cadastro-wrapper">
+        <!-- Sidebar com imagem -->
+        <div class="cadastro-sidebar">
+            <img src="../assets/images/login-imagem.png" alt="Imagem de Login" class="cadastro-image">
+        </div>
+        <!-- Área do formulário -->
+        <div class="cadastro-content">
+            <div class="cadastro-container">
+                <div class="cadastro-header">
+                    <h1>Fazer Login</h1>
+                    <p>Insira seus dados para acessar sua conta</p>
+                </div>
+                <form class="cadastro-form">
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Digite seu email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                    </div>
+                    <button id="btn-cli" type="submit" class="cadastro-button">Entrar</button>
+                </form>
+                <p class="login-link">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

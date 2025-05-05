@@ -1,0 +1,3 @@
+[submodule "teste"]
+	path = teste
+	url = https://github.com/Cabanas01/TESTE02-CHAT-AJUSTOU.git

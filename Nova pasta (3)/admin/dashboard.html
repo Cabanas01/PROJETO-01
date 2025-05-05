@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=2.0">
+    <title>Dashboard - Admin</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-area">
+            <img src="../assets/images/logo.png.png" alt="Logo" class="admin-logo">
+        </div>
+
+        <ul>
+            <li><a href="#" class="menu-item active" data-section="inicio">Início</a></li>
+            <li><a href="#" class="menu-item" data-section="lista-clientes">Lista de Clientes</a></li>
+            <li><a href="#" class="menu-item" data-section="andamentos">Andamentos</a></li>
+            <li><a href="#" class="menu-item" data-section="finalizados">Finalizados</a></li>
+            <li><a href="#" class="menu-item" data-section="sair">Sair</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h1>Dashboard</h1>
+
+        <!-- Seção Início -->
+        <div class="section" id="inicio">
+            <h2>Início</h2>
+            <p>Bem-vindo ao Dashboard Administrativo! Selecione uma opção no menu para começar.</p>
+        </div>
+
+        <!-- Seção Lista de Clientes -->
+        <div class="section" id="lista-clientes" style="display: none;">
+            <h2>Lista de Clientes</h2>
+            <button class="add-client-btn" onclick="openAddClientModal()">Adicionar Cliente</button>
+            <div class="table-controls">
+                <input type="text" id="search-clients" placeholder="Buscar clientes..." onkeyup="searchTable('client-table', 'search-clients')">
+                <select id="filter-clients" onchange="filterTable('client-table', 'filter-clients')">
+                    <option value="">Filtrar por...</option>
+                    <option value="0">Nome</option>
+                    <option value="3">CPF</option>
+                    <option value="6">Placa</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="client-table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('client-table', 0)">Nome</th>
+                            <th onclick="sortTable('client-table', 1)">Telefone</th>
+                            <th onclick="sortTable('client-table', 2)">Email</th>
+                            <th onclick="sortTable('client-table', 3)">CPF</th>
+                            <th onclick="sortTable('client-table', 4)">CNH</th>
+                            <th onclick="sortTable('client-table', 5)">RENAVAM</th>
+                            <th onclick="sortTable('client-table', 6)">Placa</th>
+                            <th>Arquivos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal para Adicionar Cliente -->
+            <div class="modal" id="add-client-modal">
+                <div class="modal-content">
+                    <span class="close-btn" onclick="closeAddClientModal()">×</span>
+                    <h3>Adicionar Novo Cliente</h3>
+                    <form id="add-client-form">
+                        <div class="form-group">
+                            <label for="nome">Nome:</label>
+                            <input type="text" id="nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefone">Telefone:</label>
+                            <input type="text" id="telefone" name="telefone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cpf">CPF:</label>
+                            <input type="text" id="cpf" name="cpf" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cnh">CNH:</label>
+                            <input type="text" id="cnh" name="cnh" >
+                        </div>
+                        <div class="form-group">
+                            <label for="renavam">RENAVAM:</label>
+                            <input type="text" id="renavam" name="renavam">
+                        </div>
+                        <div class="form-group">
+                            <label for="placa">Placa:</label>
+                            <input type="text" id="placa" name="placa">
+                        </div>
+                        <div class="form-group">
+                            <label for="arquivos">Arquivos:</label>
+                            <input type="file" id="arquivos" name="arquivos" multiple>
+                        </div>
+                        <button type="submit">Adicionar Cliente</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal para Visualizar/Adicionar Arquivos -->
+            <div class="modal" id="file-modal">
+                <div class="modal-content">
+                    <span class="close-btn" onclick="closeFileModal()">×</span>
+                    <h3>Arquivos do Cliente: <span id="file-client-name"></span></h3>
+                    <div id="file-list" class="file-list-container"></div>
+                    <div class="form-group">
+                        <label for="add-files">Adicionar Novos Arquivos:</label>
+                        <input type="file" id="add-files" name="add-files" multiple>
+                    </div>
+                    <button onclick="addFilesToClient()">Adicionar Arquivos</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção Andamentos -->
+        <div class="section" id="andamentos" style="display: none;">
+            <h2>Andamentos</h2>
+            <button class="add-client-btn" onclick="openAddAndamentoModal()">Adicionar Andamento</button>
+            <div class="table-controls">
+                <input type="text" id="search-andamentos" placeholder="Buscar andamentos..." onkeyup="searchTable('andamentos-table', 'search-andamentos')">
+                <select id="filter-andamentos" onchange="filterTable('andamentos-table', 'filter-andamentos')">
+                    <option value="">Filtrar por...</option>
+                    <option value="0">Nome</option>
+                    <option value="1">Número do Processo</option>
+                    <option value="4">Andamento</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="andamentos-table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('andamentos-table', 0)">Nome do Cliente</th>
+                            <th onclick="sortTable('andamentos-table', 1)">Número do Processo</th>
+                            <th onclick="sortTable('andamentos-table', 2)">Prazo (Data)</th>
+                            <th onclick="sortTable('andamentos-table', 3)">Sobre</th>
+                            <th onclick="sortTable('andamentos-table', 4)">Andamento</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal para Adicionar Andamento -->
+            <div class="modal" id="add-andamento-modal">
+                <div class="modal-content">
+                    <span class="close-btn" onclick="closeAddAndamentoModal()">×</span>
+                    <h3>Adicionar Novo Andamento</h3>
+                    <form id="add-andamento-form">
+                        <div class="form-group">
+                            <label for="add-cpf">CPF do Cliente:</label>
+                            <input type="text" id="add-cpf" name="cpf" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-processo">Número do Processo:</label>
+                            <input type="text" id="add-processo" name="processo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-prazo">Prazo (Data):</label>
+                            <input type="text" id="add-prazo" name="prazo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-sobre">Sobre:</label>
+                            <input type="text" id="add-sobre" name="sobre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-andamento">Andamento:</label>
+                            <input type="text" id="add-andamento" name="andamento" required>
+                        </div>
+                        <button type="submit">Adicionar Andamento</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal para Editar Andamento -->
+            <div class="modal" id="edit-andamento-modal">
+                <div class="modal-content">
+                    <span class="close-btn" onclick="closeEditModal()">×</span>
+                    <h3>Editar Andamento</h3>
+                    <form id="edit-andamento-form">
+                        <div class="form-group">
+                            <label for="edit-nome">Nome do Cliente:</label>
+                            <input type="text" id="edit-nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-processo">Número do Processo:</label>
+                            <input type="text" id="edit-processo" name="processo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-prazo">Prazo (Data):</label>
+                            <input type="text" id="edit-prazo" name="prazo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-sobre">Sobre:</label>
+                            <input type="text" id="edit-sobre" name="sobre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-andamento">Andamento:</label>
+                            <input type="text" id="edit-andamento" name="andamento" required>
+                        </div>
+                        <button type="submit">Salvar Alterações</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção Finalizados -->
+        <div class="section" id="finalizados" style="display: none;">
+            <h2>Finalizados</h2>
+            <button class="add-client-btn" onclick="openAddFinalizadoModal()">Adicionar Finalizado</button>
+            <div class="table-controls">
+                <input type="text" id="search-finalizados" placeholder="Buscar finalizados..." onkeyup="searchTable('finalizados-table', 'search-finalizados')">
+                <select id="filter-finalizados" onchange="filterTable('finalizados-table', 'filter-finalizados')">
+                    <option value="">Filtrar por...</option>
+                    <option value="0">Nome</option>
+                    <option value="1">Número do Processo</option>
+                    <option value="2">Resultado</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="finalizados-table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('finalizados-table', 0)">Nome do Cliente</th>
+                            <th onclick="sortTable('finalizados-table', 1)">Número do Processo</th>
+                            <th onclick="sortTable('finalizados-table', 2)">Resultado do Processo</th>
+                            <th onclick="sortTable('finalizados-table', 3)">Valor Pago</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>João</td>
+                            <td>001/2025</td>
+                            <td>Ganho</td>
+                            <td>R$ 5.000,00</td>
+                            <td>
+                                <button class="edit-btn" onclick="openEditFinalizadoModal(this)">Editar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal para Adicionar Finalizado -->
+            <div class="modal" id="add-finalizado-modal">
+                <div class="modal-content">
+                    <span class="close-btn" onclick="closeAddFinalizadoModal()">×</span>
+                    <h3>Adicionar Novo Finalizado</h3>
+                    <form id="add-finalizado-form">
+                        <div class="form-group">
+                            <label for="add-finalizado-nome">Nome do Cliente:</label>
+                            <input type="text" id="add-finalizado-nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-finalizado-processo">Número do Processo:</label>
+                            <input type="text" id="add-finalizado-processo" name="processo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-finalizado-resultado">Resultado do Processo:</label>
+                            <input type="text" id="add-finalizado-resultado" name="resultado" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-finalizado-valor">Valor Pago:</label>
+                            <input type="text" id="add-finalizado-valor" name="valor" required>
+                        </div>
+                        <button type="submit">Adicionar Finalizado</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal para Editar Finalizado -->
+            <div class="modal" id="edit-finalizado-modal">
+                <div class="modal-content">
+                    <span class="close-btn" onclick="closeEditFinalizadoModal()">×</span>
+                    <h3>Editar Finalizado</h3>
+                    <form id="edit-finalizado-form">
+                        <div class="form-group">
+                            <label for="edit-finalizado-nome">Nome do Cliente:</label>
+                            <input type="text" id="edit-finalizado-nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-finalizado-processo">Número do Processo:</label>
+                            <input type="text" id="edit-finalizado-processo" name="processo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-finalizado-resultado">Resultado do Processo:</label>
+                            <input type="text" id="edit-finalizado-resultado" name="resultado" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-finalizado-valor">Valor Pago:</label>
+                            <input type="text" id="edit-finalizado-valor" name="valor" required>
+                        </div>
+                        <button type="submit">Salvar Alterações</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção Sair -->
+        <div class="section" id="sair" style="display: none;">
+            <h2>Sair</h2>
+            <p>Você deseja sair do sistema? <a href="#">Clique aqui para logout</a>.</p>
+        </div>
+
+        <!-- Seção Estatísticas de CRM -->
+        <div class="section" id="estatisticas-crm">
+            <h2>Estatísticas de CRM</h2>
+            <div class="graphs">
+                <div class="graph-card">
+                    <h3>Gráfico: Pessoas Cadastradas</h3>
+                    <div class="graph-placeholder"></div>
+                </div>
+                <div class="graph-card">
+                    <h3>Gráfico: Atividade Recente</h3>
+                    <div class="graph-placeholder"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Objeto para armazenar os arquivos por cliente
+        let clientFiles = {};
+
+        // Função para gerenciar a navegação no menu
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.menu-item').forEach(menu => {
+                    menu.classList.remove('active');
+                });
+                this.classList.add('active');
+                document.querySelectorAll('.section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                const sectionId = this.getAttribute('data-section');
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                }
+                const estatisticasCrm = document.getElementById('estatisticas-crm');
+                if (sectionId === 'inicio') {
+                    estatisticasCrm.style.display = 'block';
+                } else {
+                    estatisticasCrm.style.display = 'none';
+                }
+
+                // Fecha os modais ao mudar de seção
+                const addClientModal = document.getElementById('add-client-modal');
+                const addAndamentoModal = document.getElementById('add-andamento-modal');
+                const editModal = document.getElementById('edit-andamento-modal');
+                const fileModal = document.getElementById('file-modal');
+                const addFinalizadoModal = document.getElementById('add-finalizado-modal');
+                const editFinalizadoModal = document.getElementById('edit-finalizado-modal');
+                if (addClientModal) addClientModal.style.display = 'none';
+                if (addAndamentoModal) addAndamentoModal.style.display = 'none';
+                if (editModal) editModal.style.display = 'none';
+                if (fileModal) fileModal.style.display = 'none';
+                if (addFinalizadoModal) addFinalizadoModal.style.display = 'none';
+                if (editFinalizadoModal) editFinalizadoModal.style.display = 'none';
+            });
+        });
+
+        // Funções para o modal de adicionar cliente
+        function openAddClientModal() {
+            const modal = document.getElementById('add-client-modal');
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        }
+
+        function closeAddClientModal() {
+            const modal = document.getElementById('add-client-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.getElementById('add-client-form').reset();
+            }
+        }
+
+        // Carregar dados dos clientes ao iniciar
+        window.addEventListener('load', function() {
+            const clientsData = JSON.parse(localStorage.getItem('clientsData') || '[]');
+            const table = document.getElementById('client-table').getElementsByTagName('tbody')[0];
+            table.innerHTML = '';
+
+            clientsData.forEach(client => {
+                const newRow = table.insertRow();
+                const filesStr = JSON.stringify(client.files || []).replace(/"/g, '&quot;');
+                newRow.innerHTML = `
+                    <td>${client.nome || ''}</td>
+                    <td>${client.telefone || ''}</td>
+                    <td>${client.email || ''}</td>
+                    <td>${client.cpf || ''}</td>
+                    <td>${client.cnh || ''}</td>
+                    <td>${client.renavam || ''}</td>
+                    <td>${client.placa || ''}</td>
+                    <td>
+                        <a href="#" class="file-box" onclick="openFileModal(this, '${client.nome}', ${filesStr})">
+                            <span>📁${client.files && client.files.length ? ` (${client.files.length})` : ''}</span>
+                        </a>
+                    </td>
+                `;
+            });
+        });
+
+        document.getElementById('add-client-form')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nome = document.getElementById('nome').value;
+            const telefone = document.getElementById('telefone').value;
+            const email = document.getElementById('email').value;
+            const cpf = document.getElementById('cpf').value;
+            const cnh = document.getElementById('cnh').value;
+            const renavam = document.getElementById('renavam').value;
+            const placa = document.getElementById('placa').value;
+            const arquivos = document.getElementById('arquivos').files;
+
+            const clientsData = JSON.parse(localStorage.getItem('clientsData') || '[]');
+            clientsData.push({nome, telefone, email, cpf, cnh, renavam, placa});
+            localStorage.setItem('clientsData', JSON.stringify(clientsData));
+
+            const table = document.getElementById('client-table').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+
+            newRow.innerHTML = `
+                <td>${nome}</td>
+                <td>${telefone}</td>
+                <td>${email}</td>
+                <td>${cpf}</td>
+                <td>${cnh}</td>
+                <td>${renavam}</td>
+                <td>${placa}</td>
+                <td>
+                    <a href="#" class="file-box" onclick="openFileModal(this, '${nome}')">
+                        <span>📁</span>
+                    </a>
+                </td>
+            `;
+
+            clientFiles[nome] = Array.from(arquivos);
+            closeAddClientModal();
+        });
+
+        // Funções para o modal de arquivos
+        let currentClient;
+
+        function openFileModal(link, clientName, files) {
+            currentClient = clientName;
+            const modal = document.getElementById('file-modal');
+            const fileList = document.getElementById('file-list');
+            const clientNameSpan = document.getElementById('file-client-name');
+
+            clientNameSpan.textContent = clientName;
+            fileList.innerHTML = '';
+
+            if (files && files.length > 0) {
+                files.forEach(fileName => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <span class="file-name">${fileName}</span>
+                        <div class="file-actions">
+                            <button onclick="viewFile('${fileName}')" class="action-btn">
+                                <i class="fas fa-eye"></i> Visualizar
+                            </button>
+                            <button onclick="downloadFile('${fileName}')" class="action-btn">
+                                <i class="fas fa-download"></i> Baixar
+                            </button>
+                            <button onclick="printFile('${fileName}')" class="action-btn">
+                                <i class="fas fa-print"></i> Imprimir
+                            </button>
+                            <button onclick="deleteFile('${fileName}')" class="action-btn delete">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
+                        </div>
+                    `;
+                    fileList.appendChild(fileItem);
+                });
+            } else {
+                fileList.innerHTML = '<p class="no-files">Nenhum arquivo adicionado.</p>';
+            }
+
+            modal.style.display = 'block';
+        }
+
+        function viewFile(fileName) {
+            const clientData = JSON.parse(localStorage.getItem('clientsData')) || [];
+            const client = clientData.find(c => c.nome === currentClient);
+            if (client && client.files) {
+                const fileURL = URL.createObjectURL(new Blob([client.files[fileName]]));
+                window.open(fileURL, '_blank');
+            }
+        }
+
+        function downloadFile(fileName) {
+            const clientData = JSON.parse(localStorage.getItem('clientsData')) || [];
+            const client = clientData.find(c => c.nome === currentClient);
+            if (client && client.files) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(new Blob([client.files[fileName]]));
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        function printFile(fileName) {
+            const clientData = JSON.parse(localStorage.getItem('clientsData')) || [];
+            const client = clientData.find(c => c.nome === currentClient);
+            if (client && client.files) {
+                const fileURL = URL.createObjectURL(new Blob([client.files[fileName]]));
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = fileURL;
+                document.body.appendChild(iframe);
+                iframe.contentWindow.print();
+            }
+        }
+
+        function deleteFile(fileName) {
+            if (confirm('Tem certeza que deseja excluir este arquivo?')) {
+                const clientData = JSON.parse(localStorage.getItem('clientsData')) || [];
+                const clientIndex = clientData.findIndex(c => c.nome === currentClient);
+                if (clientIndex !== -1) {
+                    const files = clientData[clientIndex].files || [];
+                    const fileIndex = files.indexOf(fileName);
+                    if (fileIndex !== -1) {
+                        files.splice(fileIndex, 1);
+                        clientData[clientIndex].files = files;
+                        localStorage.setItem('clientsData', JSON.stringify(clientData));
+                        openFileModal(null, currentClient, files);
+                    }
+                }
+            }
+        }
+
+        function closeFileModal() {
+            const modal = document.getElementById('file-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.getElementById('add-files').value = '';
+            }
+        }
+
+        function addFilesToClient() {
+            const newFiles = document.getElementById('add-files').files;
+            if (newFiles.length > 0) {
+                if (!clientFiles[currentClient]) {
+                    clientFiles[currentClient] = [];
+                }
+                clientFiles[currentClient] = clientFiles[currentClient].concat(Array.from(newFiles));
+                openFileModal(null, currentClient);
+            }
+        }
+
+        // Funções para o modal de adicionar andamento
+        function openAddAndamentoModal() {
+            const modal = document.getElementById('add-andamento-modal');
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        }
+
+        function closeAddAndamentoModal() {
+            const modal = document.getElementById('add-andamento-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.getElementById('add-andamento-form').reset();
+            }
+        }
+
+        // Carregar andamentos ao iniciar
+        async function loadAndamentos() {
+            try {
+                const response = await fetch('/api/andamentos');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const andamentosData = await response.json();
+                updateAndamentosTable(andamentosData);
+            } catch (error) {
+                console.error('Erro ao carregar andamentos:', error);
+                alert('Erro ao carregar andamentos. Verifique o console para detalhes.');
+            }
+        }
+
+        window.addEventListener('load', loadAndamentos);
+
+
+        function updateAndamentosTable(andamentos) {
+            const table = document.getElementById('andamentos-table').getElementsByTagName('tbody')[0];
+            table.innerHTML = '';
+
+            andamentos.forEach(andamento => {
+                const newRow = table.insertRow();
+                newRow.innerHTML = `
+                    <td>${andamento.nome}</td>
+                    <td>${andamento.processo_numero}</td>
+                    <td>${andamento.prazo}</td>
+                    <td>${andamento.sobre}</td>
+                    <td>${andamento.descricao}</td>
+                    <td>
+                        <button class="edit-btn" onclick="openEditModal(this)">Editar</button>
+                    </td>
+                `;
+            });
+        }
+
+        document.getElementById('add-andamento-form')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = {
+                cpf: document.getElementById('add-cpf').value,
+                processo_numero: document.getElementById('add-processo').value,
+                prazo: document.getElementById('add-prazo').value,
+                sobre: document.getElementById('add-sobre').value,
+                descricao: document.getElementById('add-andamento').value,
+                status: 'Em andamento'
+            };
+
+            try {
+                const response = await fetch('/api/andamentos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    alert(error.error || 'Erro ao adicionar andamento');
+                    return;
+                }
+
+                alert('Andamento adicionado com sucesso!');
+                closeAddAndamentoModal();
+                // Recarregar a tabela de andamentos
+                loadAndamentos();
+            } catch (error) {
+                alert('Erro ao adicionar andamento: ' + error.message);
+            }
+        });
+
+        // Funções para o modal de edição de andamentos
+        let currentRow;
+
+        function openEditModal(button) {
+            currentRow = button.parentElement.parentElement;
+            const modal = document.getElementById('edit-andamento-modal');
+
+            document.getElementById('edit-nome').value = currentRow.cells[0].textContent;
+            document.getElementById('edit-processo').value = currentRow.cells[1].textContent;
+            document.getElementById('edit-prazo').value = currentRow.cells[2].textContent;
+            document.getElementById('edit-sobre').value = currentRow.cells[3].textContent;
+            document.getElementById('edit-andamento').value = currentRow.cells[4].textContent;
+
+            modal.style.display = 'block';
+        }
+
+        function closeEditModal() {
+            const modal = document.getElementById('edit-andamento-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        document.getElementById('edit-andamento-form')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nome = document.getElementById('edit-nome').value;
+            const processo = document.getElementById('edit-processo').value;
+            const prazo = document.getElementById('edit-prazo').value;
+            const sobre = document.getElementById('edit-sobre').value;
+            const andamento = document.getElementById('edit-andamento').value;
+
+            const andamentosData = JSON.parse(localStorage.getItem('andamentosData') || '[]');
+            const index = andamentosData.findIndex(item => item.processo === processo);
+            if (index !== -1) {
+                andamentosData[index] = { nome, processo, prazo, sobre, andamento };
+            }
+            localStorage.setItem('andamentosData', JSON.stringify(andamentosData));
+            updateAndamentosTable(andamentosData);
+            closeEditModal();
+
+        });
+
+        // Funções para o modal de adicionar finalizado
+        function openAddFinalizadoModal() {
+            const modal = document.getElementById('add-finalizado-modal');
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        }
+
+        function closeAddFinalizadoModal() {
+            const modal = document.getElementById('add-finalizado-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.getElementById('add-finalizado-form').reset();
+            }
+        }
+
+        document.getElementById('add-finalizado-form')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nome = document.getElementById('add-finalizado-nome').value;
+            const processo = document.getElementById('add-finalizado-processo').value;
+            const resultado = document.getElementById('add-finalizado-resultado').value;
+            const valor = document.getElementById('add-finalizado-valor').value;
+
+            const table = document.getElementById('finalizados-table').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+
+            newRow.innerHTML = `
+                <td>${nome}</td>
+                <td>${processo}</td>
+                <td>${resultado}</td>
+                <td>${valor}</td>
+                <td>
+                    <button class="edit-btn" onclick="openEditFinalizadoModal(this)">Editar</button>
+                </td>
+            `;
+
+            closeAddFinalizadoModal();
+        });
+
+        // Funções para o modal de edição de finalizados
+        let currentFinalizadoRow;
+
+        function openEditFinalizadoModal(button) {
+            currentFinalizadoRow = button.parentElement.parentElement;
+            const modal = document.getElementById('edit-finalizado-modal');
+
+            document.getElementById('edit-finalizado-nome').value = currentFinalizadoRow.cells[0].textContent;
+            document.getElementById('edit-finalizado-processo').value = currentFinalizadoRow.cells[1].textContent;
+            document.getElementById('edit-finalizado-resultado').value = currentFinalizadoRow.cells[2].textContent;
+            document.getElementById('edit-finalizado-valor').value = currentFinalizadoRow.cells[3].textContent;
+
+            modal.style.display = 'block';
+        }
+
+        function closeEditFinalizadoModal() {
+            const modal = document.getElementById('edit-finalizado-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        document.getElementById('edit-finalizado-form')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            currentFinalizadoRow.cells[0].textContent = document.getElementById('edit-finalizado-nome').value;
+            currentFinalizadoRow.cells[1].textContent = document.getElementById('edit-finalizado-processo').value;
+            currentFinalizadoRow.cells[2].textContent = document.getElementById('edit-finalizado-resultado').value;
+            currentFinalizadoRow.cells[3].textContent = document.getElementById('edit-finalizado-valor').value;
+
+            closeEditFinalizadoModal();
+        });        // Funções para busca, filtro e ordenação
+        function searchTable(tableId, searchId) {
+            const input = document.getElementById(searchId);
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById(tableId);
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < tr.length; i++) {
+                let found = false;
+                const td = tr[i].getElementsByTagName('td');
+                for (let j = 0; j < td.length; j++) {
+                    const cell = td[j];
+                    if (cell && cell.textContent.toLowerCase().indexOf(filter) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+                tr[i].style.display = found ? '' : 'none';
+            }
+        }
+
+        function filterTable(tableId, filterId) {
+            const select = document.getElementById(filterId);
+            const filterValue = select.value;
+            const table = document.getElementById(tableId);
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName('td');
+                if (filterValue === '' || (td[filterValue] && td[filterValue].textContent.trim() !== '')) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+
+        function sortTable(tableId, colIndex) {
+            const table = document.getElementById(tableId);
+            let switching = true;
+            let shouldSwitch, i;
+            let dir = "asc"; // Direção inicial: ascendente
+            let switchcount = 0;
+
+            while (switching) {
+                switching = false;
+                const rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    const x = rows[i].getElementsByTagName("td")[colIndex];
+                    const y = rows[i + 1].getElementsByTagName("td")[colIndex];
+
+                    const xContent = x.textContent.toLowerCase();
+                    const yContent = y.textContent.toLowerCase();
+
+                    if (dir === "asc") {
+                        if (xContent > yContent) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (xContent < yContent) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else if (switchcount === 0 && dir === "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

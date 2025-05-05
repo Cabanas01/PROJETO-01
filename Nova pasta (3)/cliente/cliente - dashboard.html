@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <title>Dashboard - Cliente</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/cliente.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-area">
+            <img src="../assets/images/logo1.png.png" alt="Logo" class="client-logo">
+        </div>
+        <ul>
+            <li><a href="#" class="menu-item active" data-section="inicio">INICIO</a></li>
+            <li><a href="#" class="menu-item" data-section="pedidos">MEUS PROCESSOS</a></li>
+            <li><a href="#" class="menu-item" data-section="configuracoes">MEU PERFIL</a></li>
+            <li><a href="#" class="menu-item" data-section="suporte">AJUDA</a></li>
+            <li><a href="#" class="menu-item" data-section="sair">SAIR</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h1>Bem-vindo, João</h1>
+
+        <!-- Seção Início -->
+        <div class="section" id="inicio">
+            <h2>Início</h2>
+            <p>Bem-vindo ao seu Dashboard! Aqui você pode visualizar seus processos, gerenciar seu perfil e obter ajuda.</p>
+        </div>
+
+        <!-- Seção MEUS PROCESSOS -->
+        <div class="section" id="pedidos" style="display: none;">
+            <h2>MEUS PROCESSOS</h2>
+            <div class="table-controls">
+                <input type="text" id="search-pedidos" placeholder="Buscar processos..." onkeyup="searchTable('pedidos-table', 'search-pedidos')">
+                <select id="filter-pedidos" onchange="filterTable('pedidos-table', 'filter-pedidos')">
+                    <option value="">Filtrar por...</option>
+                    <option value="0">Nome do Cliente</option>
+                    <option value="1">Número do Processo</option>
+                    <option value="4">Andamento</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="pedidos-table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('pedidos-table', 0)">Nome do Cliente</th>
+                            <th onclick="sortTable('pedidos-table', 1)">Número do Processo</th>
+                            <th onclick="sortTable('pedidos-table', 2)">Prazo (Data)</th>
+                            <th onclick="sortTable('pedidos-table', 3)">Sobre</th>
+                            <th onclick="sortTable('pedidos-table', 4)">Andamento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>João</td>
+                            <td>001/2025</td>
+                            <td>15/04/2025</td>
+                            <td>Descrição do processo</td>
+                            <td>Em andamento</td>
+                        </tr>
+                        <tr>
+                            <td>João</td>
+                            <td>002/2025</td>
+                            <td>20/04/2025</td>
+                            <td>Outro processo de João</td>
+                            <td>Em análise</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p id="no-processes-message" style="display: none; color: #4b5e77; margin-top: 10px;">Nenhum processo encontrado.</p>
+            </div>
+        </div>
+
+        <!-- Seção MEU PERFIL -->
+        <div class="section" id="configuracoes" style="display: none;">
+            <h2>MEU PERFIL</h2>
+            <form class="profile-form" id="profile-form">
+                <div class="form-group">
+                    <label for="foto">Foto do Rosto:</label>
+                    <input type="file" id="foto" name="foto" accept="image/*">
+                    <div class="photo-preview" id="photo-preview">
+                        <img id="photo-preview-img" src="" alt="Prévia da Foto" style="display: none; max-width: 150px; margin-top: 10px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="nome">Nome Completo:</label>
+                    <input type="text" id="nome" name="nome" placeholder="Seu nome completo" value="João">
+                </div>
+                <div class="form-group">
+                    <label for="telefone">Telefone:</label>
+                    <input type="text" id="telefone" name="telefone" placeholder="Seu telefone" value="(11) 99999-9999">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="Seu email" value="joao@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="cpf">CPF:</label>
+                    <input type="text" id="cpf" name="cpf" placeholder="Seu CPF" value="123.456.789-00">
+                </div>
+                <div class="form-group">
+                    <label for="rg">RG:</label>
+                    <input type="text" id="rg" name="rg" placeholder="Seu RG" value="12.345.678-9">
+                </div>
+                <div class="form-group">
+                    <label for="cnh">CNH:</label>
+                    <input type="text" id="cnh" name="cnh" placeholder="Sua CNH" value="123456789">
+                </div>
+                <div class="form-group">
+                    <label for="renavam">Renavam:</label>
+                    <input type="text" id="renavam" name="renavam" placeholder="Seu Renavam" value="12.345.678-9">
+                </div>
+                <div class="form-group">
+                    <label for="placa">Placa:</label>
+                    <input type="text" id="placa" name="placa" placeholder="Placa do Veiculo" value="12.345.678-9">
+                </div>
+                <div class="form-group">
+                    <label for="endereco">Endereço:</label>
+                    <input type="text" id="endereco" name="endereco" placeholder="Seu endereço" value="Rua Exemplo, 123, São Paulo - SP">
+                </div>
+                <div class="form-group">
+                    <label for="documentos">Upload de Documentos:</label>
+                    <input type="file" id="documentos" name="documentos" multiple>
+                    <div class="document-list" id="document-list">
+                        <p style="color: #4b5e77;">Nenhum documento selecionado.</p>
+                    </div>
+                </div>
+                <button type="submit">Salvar</button>
+            </form>
+        </div>
+
+        <!-- Seção AJUDA -->
+        <div class="section" id="suporte" style="display: none;">
+            <h2>AJUDA</h2>
+            <p>Entre em contato com nossa equipe de suporte:</p>
+            <p>Email: <a href="mailto:suporte@exemplo.com">suporte@exemplo.com</a></p>
+            <p>Telefone: (11) 1234-5678</p>
+        </div>
+
+        <!-- Seção SAIR -->
+        <div class="section" id="sair" style="display: none;">
+            <h2>SAIR</h2>
+            <p>Você deseja sair do sistema? <a href="#">Clique aqui para logout</a>.</p>
+        </div>
+    </div>
+
+    <script>
+        // Função para gerenciar a navegação no menu
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.menu-item').forEach(menu => {
+                    menu.classList.remove('active');
+                });
+                this.classList.add('active');
+                document.querySelectorAll('.section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                const sectionId = this.getAttribute('data-section');
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                }
+            });
+        });
+
+        // Funções para busca, filtro e ordenação
+        function searchTable(tableId, searchId) {
+            const input = document.getElementById(searchId);
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById(tableId);
+            const tr = table.getElementsByTagName('tr');
+            const noProcessesMessage = document.getElementById('no-processes-message');
+            let visibleRows = 0;
+
+            for (let i = 1; i < tr.length; i++) {
+                let found = false;
+                const td = tr[i].getElementsByTagName('td');
+                for (let j = 0; j < td.length; j++) {
+                    const cell = td[j];
+                    if (cell && cell.textContent.toLowerCase().indexOf(filter) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+                tr[i].style.display = found ? '' : 'none';
+                if (found) visibleRows++;
+            }
+
+            noProcessesMessage.style.display = visibleRows === 0 ? 'block' : 'none';
+        }
+
+        function filterTable(tableId, filterId) {
+            const select = document.getElementById(filterId);
+            const filterValue = select.value;
+            const table = document.getElementById(tableId);
+            const tr = table.getElementsByTagName('tr');
+            const noProcessesMessage = document.getElementById('no-processes-message');
+            let visibleRows = 0;
+
+            for (let i = 1; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName('td');
+                if (filterValue === '' || (td[filterValue] && td[filterValue].textContent.trim() !== '')) {
+                    tr[i].style.display = '';
+                    visibleRows++;
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+
+            noProcessesMessage.style.display = visibleRows === 0 ? 'block' : 'none';
+        }
+
+        function sortTable(tableId, colIndex) {
+            const table = document.getElementById(tableId);
+            let switching = true;
+            let shouldSwitch, i;
+            let dir = "asc"; // Direção inicial: ascendente
+            let switchcount = 0;
+
+            while (switching) {
+                switching = false;
+                const rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    const x = rows[i].getElementsByTagName("td")[colIndex];
+                    const y = rows[i + 1].getElementsByTagName("td")[colIndex];
+
+                    const xContent = x.textContent.toLowerCase();
+                    const yContent = y.textContent.toLowerCase();
+
+                    if (dir === "asc") {
+                        if (xContent > yContent) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (xContent < yContent) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else if (switchcount === 0 && dir === "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+
+        // Funções para o formulário de MEU PERFIL
+        const profileForm = document.getElementById('profile-form');
+        const photoInput = document.getElementById('foto');
+        const photoPreviewImg = document.getElementById('photo-preview-img');
+        const documentInput = document.getElementById('documentos');
+        const documentList = document.getElementById('document-list');
+
+        // Carregar dados do localStorage ao iniciar
+        window.onload = function() {
+            const savedData = JSON.parse(localStorage.getItem('profileData')) || {};
+            document.getElementById('nome').value = savedData.nome || 'João';
+            document.getElementById('telefone').value = savedData.telefone || '(11) 99999-9999';
+            document.getElementById('email').value = savedData.email || 'joao@email.com';
+            document.getElementById('cpf').value = savedData.cpf || '123.456.789-00';
+            document.getElementById('rg').value = savedData.rg || '12.345.678-9';
+            document.getElementById('cnh').value = savedData.cnh || '123456789';
+            document.getElementById('endereco').value = savedData.endereco || 'Rua Exemplo, 123, São Paulo - SP';
+
+            // Carregar prévia da foto, se existir
+            const savedPhoto = localStorage.getItem('profilePhoto');
+            if (savedPhoto) {
+                photoPreviewImg.src = savedPhoto;
+                photoPreviewImg.style.display = 'block';
+            }
+        };
+
+        // Prévia da foto
+        photoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    photoPreviewImg.src = e.target.result;
+                    photoPreviewImg.style.display = 'block';
+                    localStorage.setItem('profilePhoto', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Lista de documentos
+        documentInput.addEventListener('change', function(e) {
+            const files = e.target.files;
+            documentList.innerHTML = '';
+            if (files.length > 0) {
+                const fileNames = Array.from(files).map(file => file.name);
+                const clientData = JSON.parse(localStorage.getItem('profileData')) || {};
+                clientData.files = fileNames;
+                localStorage.setItem('profileData', JSON.stringify(clientData));
+
+                // Atualizar lista de clientes
+                const clientsData = JSON.parse(localStorage.getItem('clientsData')) || [];
+                const existingClientIndex = clientsData.findIndex(client => client.cpf === clientData.cpf);
+                if (existingClientIndex !== -1) {
+                    clientsData[existingClientIndex].files = fileNames;
+                }
+                localStorage.setItem('clientsData', JSON.stringify(clientsData));
+
+                fileNames.forEach(fileName => {
+                    const fileItem = document.createElement('p');
+                    fileItem.textContent = fileName;
+                    documentList.appendChild(fileItem);
+                });
+            } else {
+                documentList.innerHTML = '<p style="color: #4b5e77;">Nenhum documento selecionado.</p>';
+            }
+
+            files.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <span class="file-name">${file.name}</span>
+                    <div class="file-actions">
+                        <button onclick="viewFile('${file.name}')" class="action-btn"><i class="fas fa-eye"></i> Visualizar</button>
+                        <button onclick="downloadFile('${file.name}')" class="action-btn"><i class="fas fa-download"></i> Baixar</button>
+                        <button onclick="printFile('${file.name}')" class="action-btn"><i class="fas fa-print"></i> Imprimir</button>
+                    </div>
+                `;
+                documentList.appendChild(fileItem);
+            });
+        });
+
+        function viewFile(fileName) {
+            const fileURL = URL.createObjectURL(documentInput.files[Array.from(documentInput.files).findIndex(f => f.name === fileName)]);
+            window.open(fileURL, '_blank');
+        }
+
+        function downloadFile(fileName) {
+            const file = documentInput.files[Array.from(documentInput.files).findIndex(f => f.name === fileName)];
+            const fileURL = URL.createObjectURL(file);
+            const a = document.createElement('a');
+            a.href = fileURL;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function printFile(fileName) {
+            const fileURL = URL.createObjectURL(documentInput.files[Array.from(documentInput.files).findIndex(f => f.name === fileName)]);
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = fileURL;
+            document.body.appendChild(iframe);
+            iframe.contentWindow.print();
+        }
+
+        // Salvar dados no localStorage
+        profileForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const profileData = {
+                nome: document.getElementById('nome').value,
+                telefone: document.getElementById('telefone').value,
+                email: document.getElementById('email').value,
+                cpf: document.getElementById('cpf').value,
+                rg: document.getElementById('rg').value,
+                cnh: document.getElementById('cnh').value,
+                renavam: document.getElementById('renavam').value,
+                placa: document.getElementById('placa').value,
+                endereco: document.getElementById('endereco').value
+            };
+
+            // Primeiro, buscar arquivos existentes
+            const currentData = JSON.parse(localStorage.getItem('profileData') || '{}');
+            const files = currentData.files || [];
+            
+            // Atualizar profileData com os arquivos existentes
+            profileData.files = files;
+            localStorage.setItem('profileData', JSON.stringify(profileData));
+
+            // Atualizar ou adicionar na lista de clientes
+            const clientsData = JSON.parse(localStorage.getItem('clientsData') || '[]');
+            const existingClientIndex = clientsData.findIndex(client => client.cpf === profileData.cpf);
+
+            if (existingClientIndex !== -1) {
+                // Manter os arquivos existentes ao atualizar
+                const existingFiles = clientsData[existingClientIndex].files || [];
+                clientsData[existingClientIndex] = {
+                    ...profileData,
+                    files: existingFiles
+                };
+            } else {
+                clientsData.push({
+                    ...profileData,
+                    files: []
+                });
+            }
+
+            localStorage.setItem('clientsData', JSON.stringify(clientsData));
+            alert('Dados salvos com sucesso!');
+            
+            // Recarregar a página para atualizar os dados
+            window.location.reload();
+        });
+    </script>
+</body>
+</html>
