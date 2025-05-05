@@ -240,6 +240,17 @@ def create_andamento():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+import sqlite3
+
+@app.route("/admin/dashboard.html")
+def dashboard():
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM clientes")  # Ajuste para sua tabela real
+    clientes = cursor.fetchall()
+    conn.close()
+    return render_template("admin/dashboard.html", clientes=clientes)
+
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=5000, debug=True)
