@@ -103,3 +103,51 @@ router.delete('/items/:id', async (req, res, next) => {
 });
 
 module.exports = router;
+
+from flask import Blueprint, jsonify, request
+from app import get_db_connection
+
+api_blueprint = Blueprint('api', __name__)
+
+@api_blueprint.route('/andamentos/all', methods=['GET'])
+def get_all_andamentos():
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT 
+                a.id, a.processo_numero, a.descricao, a.data, a.status, a.prazo, a.sobre,
+                c.nome as cliente_nome
+            FROM Andamentos a
+            LEFT JOIN Clientes c ON a.cliente_id = c.id
+            ORDER BY a.data DESC
+        ''')
+        andamentos = [dict(row) for row in cursor.fetchall()]
+        conn.close()
+        return jsonify({"andamentos": andamentos})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@api_blueprint.route('/andamentos', methods=['POST'])
+def create_andamento():
+    try:
+        data = request.get_json()
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO Andamentos (
+                processo_numero, descricao, data, status, prazo, sobre, cliente_id
+            ) VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?)
+        ''', (
+            data['processo_numero'],
+            data['descricao'],
+            data['status'],
+            data['prazo'],
+            data['sobre'],
+            data['cliente_id']
+        ))
+        conn.commit()
+        conn.close()
+        return jsonify({"message": "Andamento criado com sucesso"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
