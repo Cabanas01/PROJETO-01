@@ -60,6 +60,22 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for cliente in clientes %}
+                        <tr>
+                            <td>{{ cliente['Nome'] }}</td>
+                            <td>{{ cliente['Telefone'] }}</td>
+                            <td>{{ cliente['Email'] }}</td>
+                            <td>{{ cliente['CPF'] }}</td>
+                            <td>{{ cliente['CNH'] }}</td>
+                            <td>{{ cliente['RENAVAM'] }}</td>
+                            <td>{{ cliente['Placa'] }}</td>
+                            <td>
+                                <a href="#" class="file-box">
+                                    <span>📁</span>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

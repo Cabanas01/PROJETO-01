@@ -49,7 +49,16 @@ def admin_login():
 
 @app.route('/admin/dashboard.html')
 def admin_dashboard():
-    return render_template('admin/dashboard.html')
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT Nome, Telefone, Email, CPF, CNH, RENAVAM, Placa FROM Clientes')
+        clientes = cursor.fetchall()
+        conn.close()
+        return render_template('admin/dashboard.html', clientes=clientes)
+    except Exception as e:
+        logging.error(f"Erro ao carregar dados para o dashboard: {e}")
+        return render_template('admin/dashboard.html', clientes=[])
 
 @app.route('/cliente/login.html')
 def cliente_login():
