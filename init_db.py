@@ -94,6 +94,27 @@ def init_db():
             )
         ''')
 
+        # Tabela de Gastos
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS Gastos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                descricao TEXT NOT NULL,
+                valor REAL NOT NULL,
+                data DATE NOT NULL
+            )
+        ''')
+
+        # Tabela de Pagamentos
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS Pagamentos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                cliente_id INTEGER NOT NULL,
+                valor REAL NOT NULL,
+                data DATE NOT NULL,
+                FOREIGN KEY (cliente_id) REFERENCES Clientes (id)
+            )
+        ''')
+
         conn.commit()
 
 if __name__ == '__main__':
