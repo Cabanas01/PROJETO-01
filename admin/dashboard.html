@@ -344,6 +344,55 @@
                 </div>
             </div>
         </div>
+
+        <!-- Seção Controle Financeiro -->
+        <div class="section" id="controle-financeiro" style="display: none;">
+            <h2>Controle Financeiro</h2>
+            <button class="add-expense-btn" onclick="openAddExpenseModal()">Adicionar Gasto</button>
+            <div class="table-container">
+                <table id="finance-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Descrição</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Gastos serão carregados dinamicamente -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="graphs">
+                <div class="graph-card">
+                    <h3>Gráfico: Entradas vs Saídas</h3>
+                    <canvas id="finance-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Adicionar Gasto -->
+        <div class="modal" id="add-expense-modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeAddExpenseModal()">×</span>
+                <h3>Adicionar Novo Gasto</h3>
+                <form id="add-expense-form">
+                    <div class="form-group">
+                        <label for="expense-date">Data:</label>
+                        <input type="date" id="expense-date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expense-description">Descrição:</label>
+                        <input type="text" id="expense-description" name="description" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expense-value">Valor:</label>
+                        <input type="number" id="expense-value" name="value" required>
+                    </div>
+                    <button type="submit">Adicionar Gasto</button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -864,6 +913,111 @@
                 }
             }
         }
+
+        // Função para carregar os clientes na aba "Meus Clientes"
+        async function carregarClientes() {
+            try {
+                const response = await fetch('/api/clientes');
+                const data = await response.json();
+
+                if (data.success) {
+                    const tbody = document.querySelector('#client-table tbody');
+                    tbody.innerHTML = '';
+
+                    data.data.forEach(cliente => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${cliente.nome}</td>
+                            <td>${cliente.telefone}</td>
+                            <td>${cliente.email}</td>
+                            <td>${cliente.cpf}</td>
+                            <td>${cliente.cnh || '-'}</td>
+                            <td>${cliente.renavam || '-'}</td>
+                            <td>${cliente.placa || '-'}</td>
+                            <td>
+                                <a href="#" class="file-box" onclick="abrirArquivos('${cliente.cpf}')">
+                                    <span>📁</span>
+                                </a>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    alert('Erro ao carregar os clientes.');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar clientes:', error);
+            }
+        }
+
+        // Função para abrir os arquivos de um cliente
+        function abrirArquivos(cpf) {
+            alert(`Abrir arquivos do cliente com CPF: ${cpf}`);
+            // Aqui você pode implementar a lógica para exibir os arquivos do cliente
+        }
+
+        // Carregar clientes ao iniciar
+        window.addEventListener('load', carregarClientes);
+
+        // Função para carregar processos finalizados
+        async function carregarFinalizados() {
+            try {
+                const response = await fetch('/api/finalizados');
+                const data = await response.json();
+
+                if (data.success) {
+                    const tbody = document.querySelector('#finalizados-table tbody');
+                    tbody.innerHTML = '';
+
+                    data.data.forEach(processo => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${processo.nome_cliente}</td>
+                            <td>${processo.numero_processo}</td>
+                            <td>${processo.resultado}</td>
+                            <td>${processo.valor_pago || '-'}</td>
+                            <td>
+                                <button class="edit-btn" onclick="adicionarValorPago(${processo.id})">Adicionar Valor</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    alert('Erro ao carregar processos finalizados.');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar processos finalizados:', error);
+            }
+        }
+
+        // Função para adicionar valor pago
+        async function adicionarValorPago(id) {
+            const valor = prompt('Informe o valor pago pelo cliente:');
+            if (!valor) return;
+
+            try {
+                const response = await fetch(`/api/finalizados/${id}/valor`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ valor })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Valor adicionado com sucesso!');
+                    carregarFinalizados();
+                } else {
+                    alert('Erro ao adicionar valor.');
+                }
+            } catch (error) {
+                console.error('Erro ao adicionar valor pago:', error);
+            }
+        }
+
+        // Carregar processos finalizados ao iniciar
+        window.addEventListener('load', carregarFinalizados);
     </script>
 </body>
 </html>

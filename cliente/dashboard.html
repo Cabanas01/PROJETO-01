@@ -115,7 +115,8 @@
                         <p style="color: #4b5e77;">Nenhum documento selecionado.</p>
                     </div>
                 </div>
-                <button type="submit">Salvar</button>
+                <button type="submit" id="salvar-perfil">Salvar</button>
+                <button type="button" id="enviar-arquivos">Enviar Arquivos</button>
             </form>
         </div>
 
@@ -356,6 +357,97 @@
             localStorage.setItem('profileData', JSON.stringify(profileData));
             alert('Dados salvos com sucesso!');
         });
+
+        // Função para carregar os dados do cliente na aba "Meu Perfil"
+        async function carregarPerfilCliente() {
+            try {
+                const cpf = localStorage.getItem('clienteCPF'); // CPF armazenado no localStorage
+                const response = await fetch(`/api/clientes/${cpf}`);
+                const cliente = await response.json();
+
+                if (cliente.success) {
+                    document.getElementById('nome').value = cliente.data.nome;
+                    document.getElementById('telefone').value = cliente.data.telefone;
+                    document.getElementById('email').value = cliente.data.email;
+                    document.getElementById('cpf').value = cliente.data.cpf;
+                    document.getElementById('rg').value = cliente.data.rg;
+                    document.getElementById('cnh').value = cliente.data.cnh;
+                    document.getElementById('renavam').value = cliente.data.renavam;
+                    document.getElementById('placa').value = cliente.data.placa;
+                    document.getElementById('endereco').value = cliente.data.endereco;
+                } else {
+                    alert('Erro ao carregar os dados do cliente.');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar perfil do cliente:', error);
+            }
+        }
+
+        // Função para salvar os dados editados do cliente
+        async function salvarPerfilCliente() {
+            try {
+                const cpf = localStorage.getItem('clienteCPF');
+                const formData = {
+                    nome: document.getElementById('nome').value,
+                    telefone: document.getElementById('telefone').value,
+                    email: document.getElementById('email').value,
+                    rg: document.getElementById('rg').value,
+                    cnh: document.getElementById('cnh').value,
+                    renavam: document.getElementById('renavam').value,
+                    placa: document.getElementById('placa').value,
+                    endereco: document.getElementById('endereco').value
+                };
+
+                const response = await fetch(`/api/clientes/${cpf}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Dados atualizados com sucesso!');
+                } else {
+                    alert('Erro ao atualizar os dados.');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar perfil do cliente:', error);
+            }
+        }
+
+        // Função para enviar arquivos do cliente
+        async function enviarArquivosCliente() {
+            try {
+                const cpf = localStorage.getItem('clienteCPF');
+                const arquivos = document.getElementById('documentos').files;
+                const formData = new FormData();
+
+                for (const arquivo of arquivos) {
+                    formData.append('arquivos', arquivo);
+                }
+
+                const response = await fetch(`/api/clientes/${cpf}/arquivos`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Arquivos enviados com sucesso!');
+                } else {
+                    alert('Erro ao enviar os arquivos.');
+                }
+            } catch (error) {
+                console.error('Erro ao enviar arquivos do cliente:', error);
+            }
+        }
+
+        // Adicionar eventos aos botões
+        window.addEventListener('load', carregarPerfilCliente);
+        document.getElementById('salvar-perfil').addEventListener('click', salvarPerfilCliente);
+        document.getElementById('enviar-arquivos').addEventListener('click', enviarArquivosCliente);
     </script>
 </body>
 </html>

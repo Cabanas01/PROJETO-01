@@ -22,7 +22,29 @@ const initializeDatabase = () => {
     });
 };
 
+// Function to get andamentos by clienteId
+function getAndamentosByClienteId(clienteId) {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT a.id, a.processo_numero, a.descricao, a.data, a.status, a.prazo, a.sobre,
+                   c.nome AS cliente_nome
+            FROM Andamentos a
+            LEFT JOIN Clientes c ON a.cliente_id = c.id
+            WHERE c.id = ?
+            ORDER BY a.data DESC;
+        `;
+        db.all(query, [clienteId], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
 module.exports = {
     db,
-    initializeDatabase
+    initializeDatabase,
+    getAndamentosByClienteId
 };
