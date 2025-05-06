@@ -1,7 +1,10 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from flask import Flask, jsonify, request, render_template, send_from_directory
 from flask_cors import CORS
 import sqlite3
-import os
 import logging
 from routes.api import api_blueprint
 
