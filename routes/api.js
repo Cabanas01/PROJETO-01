@@ -10,7 +10,12 @@ const {
   addAndamento,
   getProcessosByClienteId,
   getFinalizados,
-  addValorPago
+  addValorPago,
+  addGasto,
+  getDadosFinanceiros,
+  finalizarAndamento,
+  getValoresPorSemana,
+  getValoresPorMes
 } = require('../db');
 
 const router = express.Router();
@@ -280,6 +285,74 @@ router.post('/finalizados/:id/valor', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+// Rota para adicionar um gasto
+router.post('/financeiro/gastos', async (req, res, next) => {
+  try {
+    const { data, descricao, valor } = req.body;
+
+    if (!data || !descricao || !valor) {
+      return res.status(400).json({ success: false, message: 'Todos os campos são obrigatórios.' });
+    }
+
+    const novoGasto = await addGasto({ data, descricao, valor });
+    res.status(201).json({ success: true, data: novoGasto });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Rota para obter dados financeiros
+router.get('/financeiro/dados', async (req, res, next) => {
+  try {
+    const dadosFinanceiros = await getDadosFinanceiros();
+    res.json({ success: true, data: dadosFinanceiros });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Rota para marcar um andamento como finalizado
+router.put('/andamentos/:id/finalizar', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const andamento = await finalizarAndamento(id);
+
+    if (!andamento) {
+      return res.status(404).json({ success: false, message: 'Andamento não encontrado.' });
+    }
+
+    res.json({ success: true, message: 'Andamento finalizado com sucesso.', data: andamento });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Rota para obter valores movimentados por semana
+router.get('/financeiro/valores-semana', async (req, res, next) => {
+  try {
+    const valoresSemana = await getValoresPorSemana();
+    res.json({ success: true, data: valoresSemana });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Rota para obter valores movimentados por mês
+router.get('/financeiro/valores-mes', async (req, res, next) => {
+  try {
+    const valoresMes = await getValoresPorMes();
+    res.json({ success: true, data: valoresMes });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Middleware para capturar erros e retornar JSON
+router.use((err, req, res, next) => {
+  console.error(err.stack); // Logar o erro no console
+  res.status(500).json({ success: false, message: 'Ocorreu um erro no servidor.', error: err.message });
 });
 
 module.exports = router;

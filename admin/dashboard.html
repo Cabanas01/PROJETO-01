@@ -1018,6 +1018,110 @@
 
         // Carregar processos finalizados ao iniciar
         window.addEventListener('load', carregarFinalizados);
+
+        // Função para finalizar um andamento
+        async function finalizarAndamento(id) {
+            try {
+                const response = await fetch(`/api/andamentos/${id}/finalizar`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Andamento finalizado com sucesso!');
+                    carregarFinalizados();
+                } else {
+                    alert('Erro ao finalizar andamento: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao finalizar andamento:', error);
+            }
+        }
+
+        // Função para carregar valores movimentados por semana
+        async function carregarValoresSemana() {
+            try {
+                const response = await fetch('/api/financeiro/valores-semana');
+                const data = await response.json();
+
+                if (data.success) {
+                    atualizarGraficoSemana(data.data);
+                } else {
+                    alert('Erro ao carregar valores semanais.');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar valores semanais:', error);
+            }
+        }
+
+        // Função para carregar valores movimentados por mês
+        async function carregarValoresMes() {
+            try {
+                const response = await fetch('/api/financeiro/valores-mes');
+                const data = await response.json();
+
+                if (data.success) {
+                    atualizarGraficoMes(data.data);
+                } else {
+                    alert('Erro ao carregar valores mensais.');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar valores mensais:', error);
+            }
+        }
+
+        // Função para adicionar um gasto
+        async function adicionarGasto() {
+            const data = document.getElementById('expense-date').value;
+            const descricao = document.getElementById('expense-description').value;
+            const valor = document.getElementById('expense-value').value;
+
+            try {
+                const response = await fetch('/api/financeiro/gastos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ data, descricao, valor })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Gasto adicionado com sucesso!');
+                    carregarGastos();
+                } else {
+                    alert('Erro ao adicionar gasto: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao adicionar gasto:', error);
+            }
+        }
+
+        // Função para carregar gastos
+        async function carregarGastos() {
+            try {
+                const response = await fetch('/api/financeiro/dados');
+                const data = await response.json();
+
+                if (data.success) {
+                    atualizarTabelaGastos(data.data);
+                } else {
+                    alert('Erro ao carregar gastos.');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar gastos:', error);
+            }
+        }
+
+        // Inicializar gráficos e dados ao carregar a página
+        window.addEventListener('load', () => {
+            carregarValoresSemana();
+            carregarValoresMes();
+            carregarGastos();
+        });
     </script>
 </body>
 </html>
