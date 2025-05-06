@@ -6,7 +6,9 @@ from flask import Flask, jsonify, request, render_template, send_from_directory
 from flask_cors import CORS
 import sqlite3
 import logging
-from routes.api import api_blueprint
+# Corrigir o import para refletir a estrutura atual
+# Substituir ou remover se o módulo não for necessário
+# from routes.api import api_blueprint
 
 app = Flask(__name__, 
     static_folder='assets',
@@ -105,7 +107,7 @@ def dashboard():
     conn.close()
     return render_template("admin/dashboard.html", clientes=clientes)
 
-app.register_blueprint(api_blueprint, url_prefix='/api')
+# app.register_blueprint(api_blueprint, url_prefix='/api')
 
 if __name__ == '__main__':
     init_db()
