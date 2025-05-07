@@ -260,7 +260,7 @@ def api_clientes():
 
             cursor.execute('INSERT INTO Client (name, cpf, email, phone, address) VALUES (?, ?, ?, ?, ?)',
                            (name, cpf, email, phone, address))
-            conn.commit()
+            conn.commit()  
             return jsonify({'success': True, 'message': 'Cliente adicionado com sucesso!'}), 201
 
     except sqlite3.IntegrityError:
