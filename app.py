@@ -241,27 +241,28 @@ def api_clientes():
         return jsonify({'error': 'Erro ao conectar ao banco de dados.'}), 500
     cursor = conn.cursor()
 
-    try:
+    try:    
         if request.method == 'GET':
-            cursor.execute('SELECT * FROM Client')
-            clientes = [dict(row) for row in cursor.fetchall()]
-            return jsonify({'success': True, 'data': clientes})
+                cursor.execute('SELECT * FROM Client')
+                clientes = [dict(row) for row in cursor.fetchall()]
+                return jsonify({'success': True, 'data': clientes})
 
-        elif request.method == 'POST':
-            data = request.get_json()
-            name = data.get('nome')
-            cpf = data.get('cpf')
-            email = data.get('email')
-            phone = data.get('telefone')
-            address = data.get('endereco')
+        
+        if request.method == 'POST':
+                data = request.get_json()
+                name = data.get('nome')
+                cpf = data.get('cpf')
+                email = data.get('email')
+                phone = data.get('telefone')
+                address = data.get('endereco')
 
-            if not name or not cpf:
-                return jsonify({'error': 'Nome e CPF são obrigatórios.'}), 400
+                if not name or not cpf:
+                    return jsonify({'error': 'Nome e CPF são obrigatórios.'}), 400
 
-            cursor.execute('INSERT INTO Client (name, cpf, email, phone, address) VALUES (?, ?, ?, ?, ?)',
-                           (name, cpf, email, phone, address))
-            conn.commit()  
-            return jsonify({'success': True, 'message': 'Cliente adicionado com sucesso!'}), 201
+                cursor.execute('INSERT INTO Client (name, cpf, email, phone, address) VALUES (?, ?, ?, ?, ?)',
+                               (name, cpf, email, phone, address))
+                conn.commit()
+                return jsonify({'success': True, 'message': 'Cliente adicionado com sucesso!'}), 201
 
     except sqlite3.IntegrityError:
         return jsonify({'error': 'CPF ou E-mail já cadastrado.'}), 400
