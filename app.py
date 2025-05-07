@@ -196,8 +196,8 @@ def init_db():
                     FOREIGN KEY (process_id) REFERENCES Process(id)
                 )
             ''')
-           conn.commit()
-            logging.info("Tabela Processo atualizado")
+            conn.commit()
+            logging.info("Tabela Processo atualizada")
         except Exception as e:
             logging.error(f"Erro ao inicializar tabela Processo: {e}")
     try:
@@ -210,8 +210,8 @@ def init_db():
             FOREIGN KEY (client_id) REFERENCES Client(id)
         )
     ''')
-        conn.commit()
-        logging.info("Tabela Documento atualizada")
+            conn.commit()
+            logging.info("Tabela Documento atualizada")
     except Exception as e:
         logging.error(f"Erro ao inicializar tabela Documento: {e}")
 
