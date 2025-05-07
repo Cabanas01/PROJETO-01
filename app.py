@@ -270,7 +270,8 @@ def api_clientes():
         logging.error(f"Erro ao processar clientes: {e}")
         return jsonify({'error': 'Erro interno do servidor.'}), 500
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 @app.route('/api/clientes/<int:id>', methods=['PUT', 'DELETE'])
 def api_cliente_id(id):
